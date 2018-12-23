@@ -1,4 +1,4 @@
-import { observable, isArrayLike } from 'mobx'
+import { observable, isArrayLike, computed, autorun, when, reaction } from 'mobx'
 // observable.box
 // array object map
 
@@ -31,5 +31,41 @@ class Store {
   @observable string = 'hello'
   @observable number = 1
   @observable bool = false
+  @computed get mixed () {
+    return this.string + '/' + this.number
+  }
 }
+var store = new Store()
+// computed
+// var foo = computed(function () {
+//   return store.string + '/' + store.number
+// })
+// // 监视数据的变化
+// foo.observe(function (change) {
+//   console.log(change);
+// })
+// // get获取
+// console.log(foo.get());
+// store.string = '1'
 
+//autorun
+// 自动运行什么：传入的函数参数
+// 什么触发自动运行：修改autorun引用的任意的数据
+autorun(() => {
+  // console.log(store.string + '/' + store.number);
+  // console.log(store.mixed);
+})
+store.number = 12
+
+//when 1:可观察数据返回的布尔值  2:1为真的时候执行
+// 第一个参数要是可观察数据。加入默认为真也会执行
+// 同步执行
+// autorun先于when
+// when(() => store.bool, () => console.log('it is true'))
+store.bool = true
+
+//reaction 1:可观察数据返回的布尔值  2:1为真的时候执行
+//第一个函数 监视这些被修改
+reaction(() => [store.number, store.string], arr => console.log(arr.join('/')))
+store.string = '1333333'
+store.number = 5656
