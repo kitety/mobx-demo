@@ -1,4 +1,4 @@
-import { observable, isArrayLike, computed, autorun, when, reaction } from 'mobx'
+import { observable, isArrayLike, computed, autorun, when, reaction, action, runInAction } from 'mobx'
 // observable.box
 // array object map
 
@@ -34,6 +34,14 @@ class Store {
   @computed get mixed () {
     return this.string + '/' + this.number
   }
+  @action.bound bar () {
+    this.string = '1366_str'
+    this.number = 1366
+  }
+  // @action bar(){
+  //   this.string = '1366_str'
+  //   this.number = 1366
+  // }
 }
 var store = new Store()
 // computed
@@ -67,5 +75,19 @@ store.bool = true
 //reaction 1:可观察数据返回的布尔值  2:1为真的时候执行
 //第一个函数 监视这些被修改
 reaction(() => [store.number, store.string], arr => console.log(arr.join('/')))
-store.string = '1333333'
-store.number = 5656
+// store.string = '1333333'
+// store.number = 5656
+
+// action action.bound
+// store.bar()
+// reaction只执行一次
+
+// 一样的
+var bar = store.bar
+// bar()
+
+// runInAction 和调用store.bar一样
+runInAction('hello runinaction',() => {
+  store.string = '1366_str'
+  store.number = 1366
+ })
