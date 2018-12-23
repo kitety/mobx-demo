@@ -20,13 +20,30 @@ function log (target) {
     }
   }
 }
+//实例对象，名称 描述符
+function readonly (target, key, desc) {
+  desc.writable = false
+}
+function validate (target, key, desc) {
+  const func = desc.value
+  desc.value = function (...args) {
+    for (const num of args) {
+      if ('number' !== typeof num) {
+        throw new Error(`"${num}" is not a number`)
+      }
+    }
+    return func.apply(this.args)
+  }
+}
 
 @log
 class Numberic {
-  PI = 3.141592653
-  add (...nums) {
+  @readonly PI = 3.141592653
+  @validate add (...nums) {
     return nums.reduce((p, n) => (p + n), 0)
   }
 }
 var n = new Numberic()
 console.log(n.add(1, 2));
+console.log(n.add(1,"sdgj"));
+// n.PI = 3 // error
