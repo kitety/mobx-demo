@@ -45,5 +45,5 @@ class Numberic {
 }
 var n = new Numberic()
 console.log(n.add(1, 2));
-console.log(n.add(1,"sdgj"));
+// console.log(n.add(1,"sdgj"));
 // n.PI = 3 // error
