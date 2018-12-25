@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
-import { action, observable, computed } from 'mobx'
+import { action, observable, computed, observe, spy, toJS, trace } from 'mobx'
 import PropTypes from 'prop-types'
 //被修饰的数组不是真正的数组，现在已经修复，不会报错了
 import { PropTypes as ObservablePropTypes, observer } from 'mobx-react'
 import './App.css'
 
+// 监控所有的时间
+// spy(event=>console.log(event))
 class Todo {
   id = Math.random()
   @observable title = ''
@@ -19,6 +21,29 @@ class Todo {
   }
 }
 class Store {
+  dispoders = []
+  constructor() {
+    // 返回一个函数，如果这个被执行的话，observe就会停止监视
+    // change.object 数据变化之后的状态  但是递归监控很麻烦
+    observe(this.todos, change => {
+      // 依次调用解除监控
+      this.dispoders.forEach(dispoder => dispoder())
+      this.dispoders = []
+      for (const todo of change.object) {
+        let dispoderN = observe(todo, changex => {
+          // console.log(changex)
+          this.save()
+        })
+        this.dispoders.push(dispoderN)
+      }
+      // console.log(change);
+      this.save()
+    })
+  }
+  save () {
+    const todoString = JSON.stringify(toJS(this.todos))
+    localStorage.setItem('todo', todoString)
+  }
   @observable todos = []
   @action.bound createTodo (title) {
     //  放在数组前面
@@ -46,10 +71,11 @@ class TodoItem extends Component {
     this.props.todo.toggle()
   }
   render () {
+    trace()
     const { todo } = this.props
     return (
       <div>
-        <input type="Checkbox" className="toggle" checked={todo.finished} onChange={this.handleClick}  />
+        <input type="Checkbox" className="toggle" checked={todo.finished} onChange={this.handleClick} />
         <span className={['title', todo.finished && 'finished'].join(' ')}>{todo.title}</span>
       </div>
     )
@@ -81,6 +107,7 @@ class TodoList extends Component {
     })
   }
   render () {
+    trace()
     const { store } = this.props
     const todos = store.todos
     return (
