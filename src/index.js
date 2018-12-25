@@ -82,13 +82,32 @@ class TodoItem extends Component {
   }
 }
 @observer
-class TodoList extends Component {
-  static propTypes = {
-    store: PropTypes.shape({
-      createTodo: PropTypes.func,
-      todos: ObservablePropTypes.observableArrayOf(ObservablePropTypes.observableObject).isRequired
-    }).isRequired
+class TodoFooter extends Component {
+  render () {
+    trace()
+    return (
+      <div>{this.props.store.left} item(s) unfinished!</div>
+    )
   }
+}
+@observer
+class TodoView extends Component {
+  render () {
+    trace()
+    return (
+      this.props.todos.map(todo => {
+        return (
+          <li className="todo-item" key={todo.id}>
+            <TodoItem todo={todo} />
+            <span className="remove" onClick={e => store.removeTodo(todo)}>X</span>
+          </li>
+        )
+      })
+    )
+  }
+}
+@observer
+class TodoHeader extends Component {
   state = {
     inputVal: ''
   }
@@ -108,33 +127,47 @@ class TodoList extends Component {
   }
   render () {
     trace()
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input type="text" onChange={this.handleChange} value={this.state.inputVal} className="input" />
+      </form>
+    )
+  }
+}
+@observer
+class TodoList extends Component {
+  static propTypes = {
+    store: PropTypes.shape({
+      createTodo: PropTypes.func,
+      todos: ObservablePropTypes.observableArrayOf(ObservablePropTypes.observableObject).isRequired
+    }).isRequired
+  }
+
+  render () {
+    trace()
     const { store } = this.props
-    const todos = store.todos
     return (
       <div className="todo-list">
         <header>
-          <form onSubmit={this.handleSubmit}>
-            <input type="text" onChange={this.handleChange} value={this.state.inputVal} className="input" />
-          </form>
+          <TodoHeader store={store} />
         </header>
         <ul>
-          {todos.map(todo => {
-            return (
-              <li className="todo-item" key={todo.id}>
-                <TodoItem todo={todo} />
-                <span className="remove" onClick={e => store.removeTodo(todo)}>X</span>
-              </li>
-            )
-          })}
+          <TodoView todos={store.todos} />
         </ul>
         <footer>
-          <div>{store.left} item(s) unfinished!</div>
+          { /* <div>{store.left} item(s) unfinished!</div> */}
+          <TodoFooter store={store} />
         </footer>
       </div>
     )
   }
 }
-
+/**
+ * 性能优化三方法
+ * 尽可能细的拆分组件
+ * 专门用组件处理列表
+ * 尽可能晚解构可观察数据
+ */
 
 // 为了保证单独的数据来源，就用传参
 ReactDOM.render(<TodoList store={store} />, document.getElementById('root'));
