@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 //被修饰的数组不是真正的数组，现在已经修复，不会报错了
 import { PropTypes as ObservablePropTypes, observer } from 'mobx-react'
 import './App.css'
+import './mobx'
 
 // 监控所有的时间
 // spy(event=>console.log(event))
@@ -49,8 +50,11 @@ class Store {
     //  放在数组前面
     this.todos.unshift(new Todo(title))
   }
-  @action.bound removeTodo (todo) {
+  @action.bound pushTodo (item) {
     //  放在数组前面
+    this.todos.push(item)
+  }
+  @action.bound removeTodo (todo) {
     this.todos.remove(todo)
   }
   @computed get left () {
@@ -141,6 +145,14 @@ class TodoList extends Component {
       createTodo: PropTypes.func,
       todos: ObservablePropTypes.observableArrayOf(ObservablePropTypes.observableObject).isRequired
     }).isRequired
+  }
+  componentWillMount () {
+    if (localStorage['todo']) {
+      const todosArr = JSON.parse(localStorage['todo'])
+      todosArr.forEach(todoEle => {
+        this.props.store.pushTodo(todoEle)
+      })
+    }
   }
 
   render () {

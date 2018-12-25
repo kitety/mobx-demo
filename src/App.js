@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 // 学习基本概念的引入
-// import './mobx'
+import './mobx'
 import { observe, action } from 'mobx'
 import PropTypes from 'prop-types'
 

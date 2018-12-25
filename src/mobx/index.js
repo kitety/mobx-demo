@@ -54,7 +54,8 @@ var store = new Store()
 // })
 // // get获取
 // console.log(foo.get());
-// store.string = '1'
+// store.string="string_hello"
+// store.string = 5858
 
 //autorun
 // 自动运行什么：传入的函数参数
@@ -63,6 +64,7 @@ autorun(() => {
   // console.log(store.string + '/' + store.number);
   // console.log(store.mixed);
 })
+// store.string="string_hello"
 store.number = 12
 
 //when 1:可观察数据返回的布尔值  2:1为真的时候执行
@@ -87,7 +89,7 @@ var bar = store.bar
 // bar()
 
 // runInAction 和调用store.bar一样
-runInAction('hello runinaction',() => {
-  store.string = '1366_str'
-  store.number = 1366
- })
+// runInAction('hello runinaction',() => {
+//   store.string = '1366_str'
+//   store.number = 1366
+//  })
