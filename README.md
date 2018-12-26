@@ -14,14 +14,15 @@ Create-React-App 脚手架
 ---
 https://github.com/facebook/create-react-app
 
-启用decorate的相关资料
+启用decorator的相关资料
 ---
 - https://blog.csdn.net/wlk2064819994/article/details/85037461
 - http://www.manongjc.com/article/23457.html
 
 src目录结构
+---
 ```js
 mobx //文件夹：练习的部分程序
 index.js // 文件：todolist的主要程序
-/*可以通过Import 直接引入对应js文件查看效果*/
+/*可以通过import 直接引入对应js文件查看效果*/
 ```
