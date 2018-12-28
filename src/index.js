@@ -21,6 +21,18 @@ class Todo {
     this.title = title
   }
 }
+class TodoBak {
+  id = Math.random()
+  @observable title = ''
+  @observable finished = false
+  @action.bound toggle () {
+    this.finished = !this.finished
+  }
+  constructor(item) {
+    this.title = item.title
+    this.finished = !!item.finished
+  }
+}
 class Store {
   dispoders = []
   constructor() {
@@ -150,7 +162,7 @@ class TodoList extends Component {
     if (localStorage['todo']) {
       const todosArr = JSON.parse(localStorage['todo'])
       todosArr.forEach(todoEle => {
-        this.props.store.pushTodo(todoEle)
+        this.props.store.pushTodo(new TodoBak(todoEle))
       })
     }
   }
